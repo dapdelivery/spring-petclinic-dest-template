@@ -1,18 +1,20 @@
 apiVersion: serving.knative.dev/v1
 kind: Service
 metadata:
-  name: tanzu-java-web-app
+  name: spring-petclinic
   labels:
-    app.kubernetes.io/part-of: tanzu-java-web-app
+    app.kubernetes.io/part-of: petclinic-server
+    apps.kubernetes.io/name: spring-petclinic
+    apps.tanzu.vmware.com/has-tests: "true"
     apps.tanzu.vmware.com/workload-type: web
     app.kubernetes.io/component: run
-    carto.run/workload-name: tanzu-java-web-app
+    carto.run/workload-name: spring-petclinic
 spec:
   template:
     metadata:
       annotations:
         boot.spring.io/actuator: http://:8080/actuator
-        boot.spring.io/version: 2.5.8
+        boot.spring.io/version: 2.6.2
         conventions.apps.tanzu.vmware.com/applied-conventions: |-
           appliveview-sample/app-live-view-connector
           appliveview-sample/app-live-view-appflavours
@@ -21,27 +23,47 @@ spec:
           spring-boot-convention/spring-boot-graceful-shutdown
           spring-boot-convention/spring-boot-web
           spring-boot-convention/spring-boot-actuator
+          spring-boot-convention/service-intent-mysql
+          spring-boot-convention/service-intent-postgres
         developer.conventions/target-containers: workload
+        kubectl.kubernetes.io/last-applied-configuration: |
+          {"apiVersion":"carto.run/v1alpha1","kind":"Workload","metadata":{"annotations":{},"labels":{"app.kubernetes.io/part-of":"petclinic-server","apps.kubernetes.io/name":"spring-petclinic","apps.tanzu.vmware.com/workload-type":"web"},"name":"spring-petclinic","namespace":"my-apps"},"spec":{"env":[{"name":"SPRING_PROFILES_ACTIVE","value":"mysql"},{"name":"JAVA_TOOL_OPTIONS","value":"-Dspring.devtools.restart.enabled=true -Dspring.devtools.restart.poll-interval=2s -Dspring.devtools.restart.quiet-period=1s -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=9005\n"}],"params":[{"name":"gitops_repository","value":"ssh://git@github.com/dapdelivery/spring-petclinic-demo-dest.git"},{"name":"gitops_ssh_secret","value":"git-ssh"}],"resources":{"limits":{"cpu":"4000m","memory":"1Gi"},"requests":{"cpu":"100m","memory":"1Gi"}},"serviceClaims":[{"name":"spring-petclinic-db","ref":{"apiVersion":"v1","kind":"Secret","name":"spring-petclinic-db"}}],"source":{"git":{"ref":{"branch":"main"},"url":"https://github.com/dapdelivery/spring-petclinic-demo.git"}}}}
+        services.conventions.apps.tanzu.vmware.com/mysql: mysql-connector-java/8.0.27
+        services.conventions.apps.tanzu.vmware.com/postgres: postgresql/42.3.1
       labels:
         app.kubernetes.io/component: run
-        app.kubernetes.io/part-of: tanzu-java-web-app
+        app.kubernetes.io/part-of: petclinic-server
+        apps.kubernetes.io/name: spring-petclinic
+        apps.tanzu.vmware.com/has-tests: "true"
         apps.tanzu.vmware.com/workload-type: web
-        carto.run/workload-name: tanzu-java-web-app
+        carto.run/workload-name: spring-petclinic
         conventions.apps.tanzu.vmware.com/framework: spring-boot
+        services.conventions.apps.tanzu.vmware.com/mysql: workload
+        services.conventions.apps.tanzu.vmware.com/postgres: workload
         tanzu.app.live.view: "true"
         tanzu.app.live.view.application.flavours: spring-boot
-        tanzu.app.live.view.application.name: demo
+        tanzu.app.live.view.application.name: petclinic
     spec:
       containers:
       - env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: mysql
         - name: JAVA_TOOL_OPTIONS
-          value: -Dmanagement.endpoint.health.show-details="always" -Dmanagement.endpoints.web.base-path="/actuator" -Dmanagement.endpoints.web.exposure.include="*" -Dmanagement.server.port="8080" -Dserver.port="8080" -Dserver.shutdown.grace-period="24s"
-        image: index.docker.io/whitewolfie/tanzu-java-web-app-my-apps@sha256:485816ee770899dcaa165cae3b3fc7c316e6e7ddc0fdba58a9a338d7d0c81be6
+          value: |-
+            -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=9005
+             -Dmanagement.endpoint.health.show-details="always" -Dmanagement.endpoints.web.base-path="/actuator" -Dmanagement.endpoints.web.exposure.include="*" -Dmanagement.server.port="8080" -Dserver.port="8080" -Dserver.shutdown.grace-period="24s" -Dspring.devtools.restart.enabled="true" -Dspring.devtools.restart.poll-interval="2s" -Dspring.devtools.restart.quiet-period="1s"
+        image: index.docker.io/whitewolfie/spring-petclinic-my-apps@sha256:e3b61cca87f7ddb4eb1780a23087b0f436e235c8df484a005355fd79d74451f4
         name: workload
         ports:
         - containerPort: 8080
           protocol: TCP
-        resources: {}
+        resources:
+          limits:
+            cpu: "4"
+            memory: 1Gi
+          requests:
+            cpu: 100m
+            memory: 1Gi
         securityContext:
           runAsUser: 1000
       serviceAccountName: default
