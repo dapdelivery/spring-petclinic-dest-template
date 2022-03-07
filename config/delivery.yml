@@ -50,7 +50,7 @@ spec:
           value: |-
             -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=9005
              -Dmanagement.endpoint.health.show-details="always" -Dmanagement.endpoints.web.base-path="/actuator" -Dmanagement.endpoints.web.exposure.include="*" -Dmanagement.server.port="8080" -Dserver.port="8080" -Dserver.shutdown.grace-period="24s" -Dspring.devtools.restart.enabled="true" -Dspring.devtools.restart.poll-interval="2s" -Dspring.devtools.restart.quiet-period="1s"
-        image: dev.registry.tanzu.vmware.com/tanzu-application-platform/ci-pipeline/apps-07-03-2022-12-21-03-070454356-07-03-2022-12-21-03-070454356/spring-petclinic-my-apps@sha256:7f3d51916a6e1e3fd692c51503da4de206764442e645373709811119de9bad1d
+        image: dev.registry.tanzu.vmware.com/tanzu-application-platform/ci-pipeline/apps-07-03-2022-12-21-03-070454356-07-03-2022-12-21-03-070454356/spring-petclinic-my-apps@sha256:55e7db2bdd3f3f5812f2ede5b9f5f5af737950282aa90be77adbc0b014e0ef22
         name: workload
         ports:
         - containerPort: 8080
