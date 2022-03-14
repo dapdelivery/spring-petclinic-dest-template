@@ -52,7 +52,7 @@ spec:
           value: |-
             -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=9005
              -Dmanagement.endpoint.health.probes.add-additional-paths="true" -Dmanagement.endpoint.health.show-details=always -Dmanagement.endpoints.web.base-path="/actuator" -Dmanagement.endpoints.web.exposure.include=* -Dmanagement.health.probes.enabled="true" -Dmanagement.server.port="8081" -Dserver.port="8080" -Dserver.shutdown.grace-period="24s" -Dspring.devtools.restart.enabled="true" -Dspring.devtools.restart.poll-interval="2s" -Dspring.devtools.restart.quiet-period="1s"
-        image: dev.registry.tanzu.vmware.com/tanzu-application-platform/ci-pipeline/apps-14-03-2022-02-44-59-578703424-14-03-2022-02-44-59-578703424/spring-petclinic-my-apps@sha256:21de0fd69d4129614e8b11aec9ef309f09060f8617638beaa250752147c886cb
+        image: dev.registry.tanzu.vmware.com/tanzu-application-platform/ci-pipeline/apps-14-03-2022-02-44-59-578703424-14-03-2022-02-44-59-578703424/spring-petclinic-my-apps@sha256:fd514406f507a56d5512ec403780e25d9336f37a1b53103ff12cbb1ced73de34
         livenessProbe:
           httpGet:
             path: /livez
